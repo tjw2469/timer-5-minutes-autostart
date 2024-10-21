@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>5 Minute Timer with Alarm</title>
+<style>
+  html, body {
+    height: 100%; /* 确保html和body占满整个视口 */
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: #FFFFFF; /* 背景颜色，可根据喜好调整 */
+  }
+  #timer {
+    font-size: 2em;
+    margin: 5px 0; /* 减少上下边距 */
+  }
+  .button-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 0px; /* 调整按钮与计时器之间的间隔 */
+  }
+  button {
+    padding: 8px 16px; /* 减少按钮的内填充 */
+    font-size: 14px; /* 减小字体大小 */
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    margin: 0 5px;
+  }
+  #startButton {
+    background-color: #000000;
+    color: white;
+  }
+  #resetButton {
+    background-color: #000000;
+    color: white;
+  }
+</style>
+</head>
+<body>
+<div id="timer">05:00</div>
+<div class="button-container">
+  <button id="startButton">Start</button>
+  <button id="resetButton">Reset</button>
+</div>
+<audio id="alarmSound" src="https://thraioch-throiff-shaarf.yolasite.com/ws/media-library/080c78504d8b4bcea8b26e2365c08a3d/alarm.wav"></audio>
+
+<script>
+  var initialTime = 5 * 60;
+  var currentTime = initialTime;
+  var activeTimer = null;
+  var display = document.getElementById('timer');
+  var alarm = document.getElementById('alarmSound');
+
+  function formatTime(seconds) {
+    var minutes = parseInt(seconds / 60, 10);
+    var seconds = parseInt(seconds % 60, 10);
+    minutes = minutes < 10 ? '0' + minutes : minutes;
+    seconds = seconds < 10 ? '0' + seconds : seconds;
+    return minutes + ':' + seconds;
+  }
+
+  function startTimer() {
+    if (!activeTimer) {
+      activeTimer = setInterval(function () {
+        currentTime -= 1;
+        display.textContent = formatTime(currentTime);
+        if (currentTime <= 0) {
+          clearInterval(activeTimer);
+          activeTimer = null;
+          currentTime = 0;
+          alarm.play();
+        }
+      }, 1000);
+    }
+  }
+
+  function resetTimer() {
+    clearInterval(activeTimer);
+    activeTimer = null;
+    currentTime = initialTime;
+    display.textContent = formatTime(currentTime);
+  }
+
+  window.onload = startTimer; // Automatically start the timer when the page loads
+
+  document.getElementById('startButton').addEventListener('click', startTimer);
+  document.getElementById('resetButton').addEventListener('click', resetTimer);
+</script>
+</body>
+</html>
